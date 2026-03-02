@@ -1,0 +1,87 @@
+<div class="popup-overlay">
+  <div class="popup">
+    <h2 class="popup-title">Tervezés</h2>
+
+    <form (ngSubmit)="tervHozzaad()" class="popup-form text-center">
+        <div class="mb-3">
+    <label class="form-label">Válassza ki a földet</label><br>
+    <select
+      class="form-select"
+      [(ngModel)]="ujterv.fold_id"
+      name="selectedOption"
+      required>
+      <option [ngValue]="null">-- választás --</option>
+      <option *ngFor="let option of foldek" [ngValue]="option.id">
+        {{ option.helyrajzi_szam }}
+      </option>
+    </select>
+  </div>
+   <div class="mb-3">
+    <label class="form-label">Válassza ki a növényt </label><br>
+    <select (ngModelChange)="vetoszures($event)"
+      class="form-select"
+      [(ngModel)]="ujterv.noveny_id"
+      name="selectedOption"
+      required>
+      <option [ngValue]="null">-- választás --</option>
+      <option *ngFor="let option of novenyek" [ngValue]="option">
+        {{ option.nnev }}
+      </option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Válassza ki a vetni kívánt magot </label><br>
+    <select 
+      class="form-select"
+      [(ngModel)]="ujterv.kiv_vetoid"
+      name="selectedOption"
+      required>
+      <option [ngValue]="null">-- választás --</option>
+      <option *ngFor="let option of szurtmagok" [ngValue]="option.iad">
+        {{ option.fajta }}
+      </option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Válassza ki a vetni kívánt magmennyiséget (kg)</label><br>
+    <input [(ngModel)]="ujterv.tomeg" type="number" name="tomeg" required>
+  </div>
+  <div >Szeretne műtrágyázni ebben a tervben?</div>
+<div class="form-check form-check-inline ">
+  <label class="form-check-label radio-option m2" for="flexRadioDefault2">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" [(ngModel)]="mutragyavane" value="igen">
+  
+    <span>Igen</span>
+  </label>
+  
+  <label class="form-check-label radio-option m-2" for="flexRadioDefault2">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" [(ngModel)]="mutragyavane" value="nem">
+
+    <span>Nem</span>
+  </label>
+</div>
+  <div *ngIf="mutragyavane === 'igen'" class="mb-3">
+    <label class="form-label">Válassza ki a műtrágya fajtáját </label><br>
+    <select
+      class="form-select"
+      [(ngModel)]="ujterv.kiv_mutrid"
+      name="selectedOption"
+      required>
+      <option [ngValue]="null">-- választás --</option>
+      <option *ngFor="let option of mutragyak" [ngValue]="option.id">
+        {{ option.fajta }}
+      </option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Válassza ki a vetés időpontját </label><br>
+    <input [(ngModel)]="ujterv.vetes_idopont" type="date" name="vetes_idopont" required>
+  </div>
+      
+      <button type="submit" class="btn-primary">Felvitel</button>
+    </form>
+
+    <button class="btn-danger" (click)="closeMenu()">Mégse
+    </button>
+  </div>
+</div>

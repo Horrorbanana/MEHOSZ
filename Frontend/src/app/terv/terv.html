@@ -1,0 +1,120 @@
+<div class="text-center mb-4">
+  <h1 class="mb-4">Terveid</h1>
+
+    <button class="btn btn-success px-4" (click)="openMenu('tervfelvisz')">Új terv hozzáadása</button>
+
+</div>
+
+<div *ngFor="let x of (terv$ | async)" class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="row align-items-center">
+      
+      <div class="col-lg-3 text-center">
+        
+      <img
+      [src]="getNoveny(x)?.kep"
+      class="img-fluid rounded"
+      style="max-height:180px; object-fit:contain">
+      <h5 class="mt-2">{{ getNoveny(x)?.nnev }}</h5>
+      </div>
+
+      <div class="col-lg-5">
+  <h5 class="fw-bold mb-3">
+    Helyrajzi szám: {{ getFold(x)?.helyrajzi_szam }}
+  </h5>
+
+  <ul class="list-group list-group-flush small">
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Vetési időpont</span>
+      <span>{{ x.vetes_idopont.split('T')[0] }}</span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Terület</span>
+      <span>{{ getFold(x)?.terulet }} ha</span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Művelési ág</span>
+      <span>{{ getFold(x)?.muvelesi_ag }}</span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Vetőmag</span>
+      <span>{{ getKivVetomag(x)?.fajta }}</span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Vetési tömeg</span>
+      <span>{{ x.tomeg }} kg</span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Műtrágya:</span>
+      <span>{{getKivMutragya(x)?.fajta.split(" ").slice(0,2).join(" ")}}</span>
+    </li>
+
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Műtrágya tömege:</span>
+      <span>{{getKivMutragya(x)?.fajta.split(" ").slice(-1)}}</span>
+    </li>
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Műtrágya ára:</span>
+      <span>{{getKivMutragya(x)?.ar}} Ft/kg</span>
+    </li>
+
+  </ul>
+</div>
+
+
+<div class="col-lg-4">
+  
+  <div class="border rounded p-3 bg-light">
+    
+    <div class="d-flex justify-content-between small">
+  <span>Kiadások:</span>
+  <span>
+    {{ kiadCountMap[x.id] || 0 }} db
+  </span>
+</div>
+
+
+    <div class="d-flex justify-content-between small">
+  <span>Kiadások összege:</span>
+  <span>
+    {{ kiadSumMap[x.id] || 0 | number }} Ft
+  </span>
+</div>
+
+
+      
+      
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-12">
+         <button class="btn btn-info btn-sm w-100"
+          (click)="PDFgen(x)">
+          Tervezet letöltése
+        </button>
+      </div>
+    </div>
+
+      <br><br>
+      
+         <button type="submit" class="btn-primary" (click)="Vegosszeg(x)" >Bevétel számítás</button>
+        <h2>{{x.osszeg}} Ft</h2>
+    
+      <button class="btn btn-danger btn-sm" (click)="delTerv(x)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+              </svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

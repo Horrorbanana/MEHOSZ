@@ -1,0 +1,28 @@
+<app-navbar></app-navbar>
+<router-outlet></router-outlet>
+<app-regcomp
+  *ngIf="menu === 'register'"
+  [isMenu] = "true"
+  (close)="closeMenu()"
+></app-regcomp>
+<app-loginform
+*ngIf="menu === 'login'"
+  [isMenu] = "true"
+  (close)="closeMenu()">
+</app-loginform>
+<app-kiadasfelform
+  *ngIf="menu === 'kiadas'"
+  [isMenu] = "true"
+  (close)="closeMenu()">
+</app-kiadasfelform>
+<app-foldfelform
+  *ngIf="menu === 'foldfelvisz'"
+  [isMenu] = "true"
+  (close)="closeMenu()">
+</app-foldfelform>
+<app-tervform 
+*ngIf="menu === 'tervfelvisz'"
+[isMenu] = "true"
+(close)="closeMenu()"
+></app-tervform>
+<app-footer></app-footer>
