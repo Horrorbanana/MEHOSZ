@@ -5,7 +5,8 @@ Frontend:
 A Frontend oldalon az Angular keretrendszert használtuk, amelyhez CSS-t és Bootstrap-ot használtunk a formázáshoz. A szegmens teszteléséhez Jasmine-t használtunk amely zökkenőmentesen működik az Angular-ral.  
 Frontend felépítés leírása - [Frontend](Frontend/README.md)  
 Backend:  
-Node.js, Jest - [Backend](Backend/README.md)  
+A Backend szerver létrehozásához Node.js nyelvet használtunk, amely egy kézenfekvő megoldás volt a MySQL-ben megírt adatbázis struktúránkhoz. A szegmens teszteléséhez Jest-et használtunk.  
+Backend felépítés leírása - [Backend](Backend/README.md)  
 Mobil App:  
-
-React Native Expo - [MobilApp](Mobilapp/README.md)  
+A Mobil App megírása React Native Expo-ban történt, amely egy működőképes mobilos appot valósít meg mind Android, mind IOS rendszerekre.  
+React Native Expo felépítés leírása - [MobilApp](Mobilapp/README.md)  
