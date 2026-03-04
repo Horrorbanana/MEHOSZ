@@ -7,6 +7,7 @@ import { Foldservice } from '../foldservice';
 import { DEJAVU_BASE64 } from '../../assets/fonts/dejavu';
 import { filter, switchMap, map } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
+import { AlertService } from '../alert-service';
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 @Component({
@@ -17,7 +18,7 @@ import autoTable from "jspdf-autotable";
 })
 
 export class Terv implements OnInit {
-constructor(private app:App,private gazdaser:Gazdaservice,private tervser:Tervservice,private foldser:Foldservice){}
+constructor(private app:App,private alertSer: AlertService,private gazdaser:Gazdaservice,private tervser:Tervservice,private foldser:Foldservice){}
 terv$!: Observable<any[]>;
 folds$!: Observable<any[]>;
 foldId: number = 0;
@@ -201,6 +202,9 @@ getKivVetomag(terv: any) {
     (f: any) => f.iad === terv.kiv_vetoid
   );
 }
+osszesOsszeg(tervek: any[]): number {
+  return tervek.reduce((sum, t) => sum + (parseFloat(t.osszeg) || 0), 0);
+}
 beavszuk:boolean = false;
 getnovinp(terv: any) {
   const result = this.tpk.find(f => f.iad === terv.kiv_vetoid);
@@ -234,25 +238,38 @@ getNoveny(terv: any) {
 }
 osszeg:number = 0;
 Vegosszeg(terv:any){
-  /*
-  if (this.osszegMap[terv.id] && this.osszegMap[terv.id] !== 0) {
-    return;
-  }
-  */
+  this.osszegMap[terv.id] = 0;
+
   const tpk = parseInt(this.getnovinp(terv));
-  const vetomagar =
+  let vetomagar =
     parseInt(terv.tomeg) *
     tpk * 
     this.getNoveny(terv).termar;
+    if (terv.kiv_mutrid != 0) {
+    vetomagar = vetomagar * 1.15;
+  }
+    console.log(this.kiadSumMap[terv.id]);
+    console.log(typeof(this.kiadSumMap[terv.id]));
+    const kiadasok = this.kiadSumMap[terv.id].toString().split('.');
+    console.log(kiadasok[0]);
+    console.log(typeof(kiadasok[0]));
+    vetomagar = vetomagar - parseInt(kiadasok[0]);
+    console.log(vetomagar);
+    vetomagar = vetomagar * 0.92;
 
-  //this.osszegMap[terv.id] = vetomagar;
     this.tervser.updateOsszeg(terv.id,vetomagar).subscribe(s=>{
     console.log(s);
+    this.loadKiadatok(terv);
     
+    
+    this.terv$.subscribe(tervek => {
+      tervek.forEach(t => this.loadKiadatok(t));
+    });
   console.log(terv)
   console.log(vetomagar);
+  window.location.reload();
   });
-  
+  this.osszegMap[terv.id] = vetomagar;
 
   
  
@@ -374,7 +391,7 @@ openEdit(terv: any) {
 
 delTerv(terv: any) {
   this.tervser.deleteFold(terv.id);
-  window.alert("Tervezet törölve!")
+  this.alertSer.show('Terv törölve!', 'danger');
 }
 /*
   save() {
