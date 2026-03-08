@@ -27,6 +27,7 @@ app.post('/api/chat', async (req, res) => {
     if (!message) {
       return res.status(400).json({ error: 'Nem adott meg üzenetet' });
     }
+
     const response = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -34,50 +35,67 @@ app.post('/api/chat', async (req, res) => {
         'Authorization': `Bearer ${process.env.POLLINATIONS_API_KEY}`
       },
       body: JSON.stringify({
+        model: 'deepseek',
+        max_tokens: 2000,
         messages: [
           {
             role: 'system',
-            content: "Egy mezőgazdászokat segítő, mezőgazdaságban profi chatbot vagy, illegális dogokat vagy káromkodást nem használhatsz soha. Mindig kötelezően magyarul beszélhetsz csak"
+            content: `Egy mezőgazdászokat segítő, mezőgazdaságban profi chatbot vagy. 
+Illegális dolgokat vagy káromkodást soha nem használhatsz.
+Mindig magyarul válaszolj.`
           },
           {
             role: 'user',
             content: message
           }
-  ],
-        model:'mistral',
-        max_tokens: 300
+        ]
       })
     });
 
     const text = await response.text();
- 
+    
+
     if (!response.ok) {
-      return res.status(500).json({
-        error: 'Pollinations API error',
-        details: text
-      });
+      return res.status(500).json({ error: 'Pollinations API hiba', details: text });
     }
 
     let data;
     try {
       data = JSON.parse(text);
     } catch {
-      return res.status(500).json({
-        error: 'Invalid JSON from Pollinations',
-        raw: text
+      return res.status(500).json({ error: 'JSON parse hiba', raw: text });
+    }
+
+    console.log('Parsed data:', JSON.stringify(data, null, 2));
+
+    const reply =
+      data?.choices?.[0]?.message?.content ||  
+      data?.choices?.[0]?.text ||               
+      data?.text ||                             
+      data?.content ||                          
+      null;
+
+    if (!reply) {
+      return res.status(500).json({ 
+        error: 'Üres válasz a modelltől',
+        debug: data 
       });
     }
 
-    res.json({
-     
-      reply: data.choices[0].message.content
-    });
+    res.json({ reply });
 
   } catch (err) {
-
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Chat hiba:', err);
+    res.status(500).json({ error: 'Szerver hiba', details: err.message });
   }
 });
+
+
+
+
+
+
+
 
 const apiurl = '/api/gazda';
 app.get(apiurl+'/:id', async (req,res)=>{
@@ -245,7 +263,7 @@ app.get('/api/inp_m', async (req,res)=>{
     
 })
 app.get('/api/hompket', async (req,res)=>{
-    db.query(`SELECT SUBSTRING_INDEX(AVG(kulonbseg)/10000,'.',1) AS atlag
+    db.query(`SELECT SUBSTRING_INDEX(AVG(kulonbseg)/100000,'.',1) AS atlag
 FROM (
     SELECT terv.fold_id,
            terv.osszeg - SUM(kiadas.osszeg) AS kulonbseg
