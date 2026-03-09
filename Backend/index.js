@@ -53,7 +53,6 @@ Mindig magyarul válaszolj.`
     });
 
     const text = await response.text();
-    
 
     if (!response.ok) {
       return res.status(500).json({ error: 'Pollinations API hiba', details: text });
@@ -66,10 +65,9 @@ Mindig magyarul válaszolj.`
       return res.status(500).json({ error: 'JSON parse hiba', raw: text });
     }
 
-    console.log('Parsed data:', JSON.stringify(data, null, 2));
 
     const reply =
-      data?.choices?.[0]?.message?.content ||  
+      data?.choices?.[0]?.message?.content || 
       data?.choices?.[0]?.text ||               
       data?.text ||                             
       data?.content ||                          
@@ -78,7 +76,7 @@ Mindig magyarul válaszolj.`
     if (!reply) {
       return res.status(500).json({ 
         error: 'Üres válasz a modelltől',
-        debug: data 
+        debug: data  
       });
     }
 
