@@ -10,7 +10,7 @@ npm init -y
 
 npm install body-parser mysql2 cors express bcrypt dotenv jest
 
-
+npm i
 
 ```
 
